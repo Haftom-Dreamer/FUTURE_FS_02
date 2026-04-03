@@ -1,16 +1,20 @@
 from flask import Blueprint, request, jsonify
 from models import db, Lead
+from utils.auth_middleware import token_required
+
 
 leads = Blueprint('leads', __name__)
 
 
 @leads.route('/', methods=['GET'])
+@token_required
 def get_leads():
     leads = Lead.query.order_by(Lead.created_at.desc()).all()
     return jsonify([lead.to_dict() for lead in leads]), 200
 
 
 @leads.route('/create', methods=['GET', 'POST'])
+@token_required
 def create_lead():
     if request.method == 'GET':
         return jsonify({'message': 'Please send a POST request with lead data to create a lead.'}), 200
@@ -27,6 +31,7 @@ def create_lead():
     return jsonify({'message': 'Lead created successfully'}), 201
 
 @leads.route('/<int:lead_id>', methods=['PUT'])
+@token_required
 def update_lead(lead_id):
     leads = Lead.query.get_or_404(lead_id)
     data = request.get_json()
@@ -37,6 +42,7 @@ def update_lead(lead_id):
     return jsonify({'message': 'Lead updated successfully'}), 200
 
 @leads.route('/<int:lead_id>', methods=['POST'])
+@token_required
 def add_note_to_lead(lead_id):
     lead = Lead.query.get_or_404(lead_id)
     data = request.get_json()
@@ -50,6 +56,7 @@ def add_note_to_lead(lead_id):
         return jsonify({'message': 'Note content is required'}), 400
 
 @leads.route('/<int:lead_id>', methods=['DELETE'])
+@token_required
 def delete_lead(lead_id):
     lead = Lead.query.get_or_404(lead_id)
     db.session.delete(lead)
