@@ -3,7 +3,7 @@ from flask_cors import CORS
 from config import config
 from models import db
 # from routes.auth_routes import auth
-# from routes.lead_routes import lead
+from routes.lead_routes import leads
 
 
 app= Flask(__name__)
@@ -12,7 +12,7 @@ db.init_app(app)
 CORS(app)
 
 # app.register_blueprint(auth, url_prefix='/auth')
-# app.register_blueprint(lead, url_prefix='/leads')
+app.register_blueprint(leads)
 
 @app.route('/')
 def home():

@@ -9,7 +9,7 @@ class User(db.Model):
     username = db.Column(db.String(80), unique=True, nullable=False)
     password = db.Column(db.String(120), nullable=False)
 
-class lead(db.Model):
+class Lead(db.Model):
     __tablename__ = 'leads'
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), nullable=False)
@@ -18,15 +18,34 @@ class lead(db.Model):
     source = db.Column(db.String(100), nullable=True)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     
-    notes = db.relationship('note', backref='lead', lazy=True)
+    notes = db.relationship('Note', backref='lead', lazy=True)
+    
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'name': self.name,
+            'email': self.email,
+            'status': self.status,
+            'source': self.source,
+            'created_at': self.created_at.isoformat(),
+            'notes': [note.text for note in self.notes]
+        }
 
-class note(db.Model):
+class Note(db.Model):
     __tablename__ = 'notes'
     id = db.Column(db.Integer, primary_key=True)
     text = db.Column(db.Text, nullable=False)
     timestamp = db.Column(db.DateTime, default=datetime.utcnow)
     
     lead_id = db.Column(db.Integer, db.ForeignKey('leads.id'), nullable=False)
+    
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'text': self.text,
+            'timestamp': self.timestamp.isoformat(),
+            'lead_id': self.lead_id
+        }
 
         
     
