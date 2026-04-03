@@ -11,8 +11,8 @@ app.config.from_object(config)
 db.init_app(app)
 CORS(app)
 
-app.register_blueprint(auth, url_prefix='/auth')
-app.register_blueprint(lead, url_prefix='/leads')
+# app.register_blueprint(auth, url_prefix='/auth')
+# app.register_blueprint(lead, url_prefix='/leads')
 
 @app.route('/')
 def home():
